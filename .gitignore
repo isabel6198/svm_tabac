@@ -1,0 +1,16 @@
+# .gitignore
+environment/
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+outputs/
+draft.md
+
+# Fichiers système macOS
+.DS_Store
+
+# Fichier Jupyter non suivi
+svm-smoke-stats.ipynb
+
+# data
+data/Ovarian_patient_data.csv
