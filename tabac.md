@@ -313,6 +313,96 @@ Et les résultats ont été résumés sous forme de tableau et visualisés pour 
 - Meilleur équilibre précision/rappel (F1-score ≈ 68.5 %)
 - Toutefois, le modèle **overfit** complètement les données d'entraînement, atteignant **100 % de précision**, ce qui peut nuire à la généralisation
 
-> Nous allons donc chercher à régulariser les modèles les plus complexes ou à en tester d'autres (e.g. SVM, boosting) pour combiner performance et robustesse.
 
+
+
+
+### ############### ============================= ###   ############### =============================
+### ############### ============================= Mardi 6   ### ############### =============================
+
+### Choix d’un modèle linéaire et non linéaire
+
+Afin de disposer de deux approches complémentaires( un modèle performant, et un autre que l’on peut facilement interpréter), nous avons retenu un modèle linéaire et un modèle non linéaire parmi ceux testés.
+Nous avons choisi ces deux modèles pour leur complémentarité :
+
+Gradient Boosting pour sa puissance prédictive
+
+LinearSVC pour sa capacité à expliquer les résultats
+
+
+# relancer les résultats pour mettre les interpretations !!!
+
+####  Modèle linéaire retenu : **LinearSVC**
+
+- Il présente un **bon compromis entre performance et simplicité** :
+  - Accuracy : 75.3 %
+  - F1-score : 0.6823
+  - Recall : 72.3 % 
+- Il est **rapide à entraîner**, **interprétable** et compatible avec des techniques d’explicabilité  et interprétation
+
+#### Modèle non linéaire retenu : **Gradient Boosting**
+Paramètres utilisés par défaut 
+learning_rate=0.1, n_estimators=100, max_depth=3
+Ce sont les valeurs par défaut classiques, qui forment un modèle peu profond mais stable.
+loss='log_loss'  configuration pour de la classification binaire (logistique)
+
+
+- Il est **le plus performant globalement** :
+  - F1-score test :
+  - Recall : 
+  - Moins sujet à l'overfitting que Random Forest ou XGBoost
+- Il capture **des interactions complexes** entre les variables, ce qui le rend bien adapté à des données de santé hétérogènes
+- Compatible avec des techniques d’explicabilité 
+
+
+
+# Optimisation :
+
+Traitement du déséquilibre de classes
+
+Dans notre projet, nous cherchons à prédire si une personne est fumeuse ou non à partir de données. L’analyse descriptive révèle un déséquilibre modéré entre les classes : environ 63 % de non-fumeurs contre 37 % de fumeurs. Ce déséquilibre peut biaiser les modèles de classification, qui auront tendance à prédire majoritairement la classe majoritaire pour maximiser l'accuracy.
+
+Or, Dans ce contexte, le coût d’un faux négatif (un fumeur non détecté) est plus élevé que celui d’un faux positif. Pour cette raison, la métrique de rappel (recall) a été privilégiée lors de l’évaluation des modèles.
+
+Pourquoi utiliser le resampling ?
+Pour corriger ce déséquilibre, nous avons envisagé deux approches :
+
+Oversampling (RandomOverSampler) : consiste à dupliquer les exemples de la classe minoritaire (fumeurs).
+(Inconvénient : risque de sur-apprentissage sur les exemples dupliqués)
+
+Undersampling (RandomUnderSampler) : consiste à réduire le nombre d’exemples de la classe majoritaire (non-fumeurs).
+(Inconvénient : perte d’une partie de l’information )
+
+
+Nous avons retenu l’undersampling car notre dataset est assez grand pour que cette perte soit acceptable. Cette méthode a été appliquée uniquement sur l’échantillon d’entraînement, avant la recherche d’hyperparamètres par validation croisée, avec comme critère de score le recall.
+
+#### Résultats : 
+
+
+**LinearSVC**
+
+### Modèle LinearSVC optimisé
+
+Après une recherche d'hyperparamètres (GridSearchCV) centrée sur le **recall**, le modèle `LinearSVC` a atteint un **rappel de 93.5 %** sur le jeu de test. Ce résultat montre une excellente capacité à **ne pas rater les fumeurs**.
+
+Le **F1-score de 0.71** confirme un bon équilibre général. La **précision plus faible (≈ 57 %)** traduit un nombre plus élevé de faux positifs, mais ce compromis est acceptable dans notre contexte, où il vaut mieux détecter trop de fumeurs que pas assez.
+
+Ce modèle linéaire présente en plus l’avantage d’être **interprétable**, ce qui facilitera l’analyse des variables les plus influentes dans la décision.
+
+
+**GradientBoostingClassifier**
+
+
+Après optimisation du modèle `GradientBoostingClassifier` via une recherche d’hyperparamètres centrée sur le **recall**, nous avons obtenu un rappel de **91.4 %** sur le jeu de test. Ce résultat marque une **amélioration significative** par rapport au modèle initial (≈ 71.7 %) et démontre la capacité du modèle à **repérer efficacement les individus fumeurs**.
+
+Bien que la précision ait légèrement baissé (~59 %), ce compromis est justifié dans le cadre de notre problématique, où l’enjeu principal est **d’éviter les faux négatifs**. Le **F1-score (≈ 0.72)** confirme un bon équilibre général entre les deux objectifs.
+
+
+
+### Selection des variables :
+### Sélection de variables avec LinearSVC
+
+Afin de simplifier le modèle et d’améliorer son interprétabilité, nous avons appliqué une sélection automatique de variables à partir des poids du modèle `LinearSVC` optimisé. Cette étape a permis de réduire le nombre de variables explicatives de 24 à 12, en conservant uniquement les plus influentes.
+
+Les résultats montrent une  baisse du **recall** (de 93,5 % à 72,4 %) mais une  amélioration de la **précision** (de 56,9 % à 64,9 %) et de l’**accuracy globale** (de 71,7 % à 75,5 %).
 
