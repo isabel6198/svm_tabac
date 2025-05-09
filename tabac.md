@@ -472,11 +472,9 @@ triglyceride > 0.40, hemoglobin > 0.61, tartar = 1, et une valeur intermédiaire
 
 ## Shape 
 
-Voici une version corrigée et fluide de ton texte, sans redondance et structurée autour des deux graphiques SHAP :
 
----
 
-### SHAP : interprétation locale et globale
+### SHAP : interprétation 
 
 Après avoir exploré LIME, nous utilisons ici la méthode SHAP, qui décompose chaque prédiction en une somme de contributions individuelles attribuées aux variables, selon une logique d’équité. Chaque variable "participe" à la prédiction et se voit attribuer une valeur SHAP indiquant dans quelle mesure elle augmente ou diminue la probabilité prédite.
 
