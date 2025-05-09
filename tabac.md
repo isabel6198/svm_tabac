@@ -297,12 +297,25 @@ Nous avons entraîné et comparé plusieurs modèles de classification binaire p
 
 Pour chaque modèle, nous avons mesuré :
 - Les performances sur les jeux d'entraînement et de test (accuracy, précision, rappel, F1-score)
+
+ | Modèle                | Recall    | F1-score  | Accuracy | Précision | Remarques clés                                 |
+| --------------------- | --------- | --------- | -------- | --------- | ---------------------------------------------- |
+| **Gradient Boosting** | **0.716** | **0.689** | 0.764    | 0.665     |  bon équilibre et rappel      |
+| **LinearSVC**         | **0.721** | 0.682     | 0.754    | 0.647     | Meilleur rappel, modèle linéaire interprétable |
+| SVC (Linear Kernel)   | 0.714     | 0.680     | 0.753    | 0.648     | Résultats proches de LinearSVC                 |
+| Random Forest         | 0.693     | 0.677     | 0.758    | 0.663     | Performant mais moins bon rappel               |
+| Logistic Regression   | 0.587     | 0.612     | 0.727    | 0.639     | Rappel insuffisant                             |
+| SVC (RBF Kernel)      | 0.440     | 0.531     | 0.715    | 0.669     | Faible rappel, pas adapté ici                  |
+| SVC (Poly Kernel)     | 0.475     | 0.563     | 0.730    | 0.691     | Bonne précision mais rappel trop faible        |
+| SGDClassifier         | 0.012     | 0.024     | 0.637    | 0.784     | Échec complet sur le rappel                    |
+
+
 - Les performances en validation croisée à 5 folds pour évaluer la stabilité des modèles
 
 Et les résultats ont été résumés sous forme de tableau et visualisés pour faciliter la comparaison.
 
 ### Résultats comparés : 
-# Il faut modifier les résultats  !!!!
+
 
 #### Régression logistique
 - Offre des performances stables (accuracy ≈ 71.7 %) sur les jeux d’entraînement et de test
@@ -330,7 +343,14 @@ Gradient Boosting pour sa puissance prédictive
 LinearSVC pour sa capacité à expliquer les résultats
 
 
-# relancer les résultats pour mettre les interpretations !!!
+
+
+
+
+
+
+
+
 
 ####  Modèle linéaire retenu : **LinearSVC**
 
@@ -406,3 +426,62 @@ Afin de simplifier le modèle et d’améliorer son interprétabilité, nous avo
 
 Les résultats montrent une  baisse du **recall** (de 93,5 % à 72,4 %) mais une  amélioration de la **précision** (de 56,9 % à 64,9 %) et de l’**accuracy globale** (de 71,7 % à 75,5 %).
 
+
+
+
+
+##### PARTIE INTERPRETATION 9 MAI ###############
+
+
+Dans la suite de notre analyse, nous nous intéressons à l’interprétation des prédictions individuelles, aussi appelée explicabilité locale.
+L’objectif est d'expliquer pourquoi le modèle a prédit qu’un individu était fumeur (ou non), en identifiant les variables qui ont le plus influencé cette prédiction.
+
+## ICE
+Les courbes ICE permettent d’analyser l’effet d’une variable spécifique sur la prédiction pour chaque individu.
+Contrairement aux PDP  qui affichent la moyenne des effets, l’ICE trace une courbe par individu, révélant les variations individuelles
+
+les courbes ICE permettent d’aller plus loin en explorant la variabilité interindividuelle derrière ces effets moyens :
+
+Pour GTP, les courbes ICE confirment une relation croissante pour la majorité des individus. Toutefois, on observe que l’intensité de l’effet varie selon les personnes, certaines courbes étant plus plates ou plus abruptes que d’autres. Cela montre que l’impact de GTP n’est pas homogène dans toute la population.
+
+Pour l’âge, les PDP suggéraient une relation non linéaire décroissante. Avec les courbes ICE on observe que de nombreuses courbes chutent fortement à partir d’un certain âge, confirmant que la majorité des individus âgés ont une probabilité prédite plus faible d’être fumeur. Mais d'autres courbes sont plus stables ou montrent un effet atténué, traduisant des profils atypiques : par exemple des fumeurs persistants parmi les personnes âgées.
+
+Concernant les triglycérides, les ICE confirment une tendance ascendante relativement homogène, avec cependant quelques variations dans la pente, suggérant un effet plus marqué chez certains individus.
+
+Et enfin pour ALT et AST montrent quant à elles une baisse globale des prédictions avec l’augmentation de ces enzymes, mais avec une dispersion faible. Cela pourrait indiquer que l’effet est plus stable ou moins influent, et pourrait refléter un phénomène indirect.
+
+
+## Interprétation locale avec LIME
+
+Afin de mieux comprendre les décisions de notre modèle Gradient Boosting pour un individu donné, nous avons utilisé la méthode LIME (Local Interpretable Model-agnostic Explanations).
+Cette approche consiste à approximer localement le modèle complexe par un modèle linéaire plus simple, permettant d’identifier quelles variables influencent une prédiction spécifique.
+
+Dans notre cas, nous avons utilisé un explainer en mode classification, en passant les données transformées (X_test_prepared), les noms des variables (feature_names) et les noms de classes (["non-fumeur", "fumeur"]).
+Nous avons sélectionné l’individu d’index i = 10 de notre jeu de test, et généré une explication à l’aide de la fonction explain_instance
+
+
+Parmi les résultats obtenus :
+
+- Intercept : 0.0677 — c’est la probabilité moyenne d’être fumeur dans le voisinage généré par LIME
+- Prediction_local : 0.7692 — c’est la prédiction du modèle simplifié (local)
+- Right : 0.7855 — c’est la prédiction du modèle complexe (Gradient Boosting) pour cet individu
+
+Ce résultat indique une prédiction de 78 % de probabilité d’être fumeur. Les variables qui ont le plus contribué à cette prédiction sont :
+homme = 1 (poids : +0.48) : Être un homme a fortement poussé la prédiction vers "fumeur".
+triglyceride > 0.40, hemoglobin > 0.61, tartar = 1, et une valeur intermédiaire de GTP ont également influencé le modèle dans ce sens, mais de manière plus modérée.
+
+## Shape 
+
+Voici une version corrigée et fluide de ton texte, sans redondance et structurée autour des deux graphiques SHAP :
+
+---
+
+### SHAP : interprétation locale et globale
+
+Après avoir exploré LIME, nous utilisons ici la méthode SHAP, qui décompose chaque prédiction en une somme de contributions individuelles attribuées aux variables, selon une logique d’équité. Chaque variable "participe" à la prédiction et se voit attribuer une valeur SHAP indiquant dans quelle mesure elle augmente ou diminue la probabilité prédite.
+
+Le **graphique Waterfall** représente l’explication locale pour un individu spécifique. La valeur moyenne des prédictions du modèle (appelée *base value*, ici -0.191 en log-odds) constitue le point de départ. À partir de là, chaque variable vient ajouter ou soustraire un effet pour aboutir à la prédiction finale, ici -0.293. Par exemple, le fait d’être un homme contribue fortement à augmenter la probabilité d’être fumeur (+0.88), tandis qu’un faible taux de GTP ou un âge élevé contribuent à réduire cette probabilité. On visualise ainsi clairement les forces "en présence" dans la décision du modèle.
+
+Le **graphe SHAP beeswarm**, quant à lui, offre une vue globale sur l’influence des variables pour l’ensemble des prédictions. On observe que la variable `homme` est la plus influente, suivie par `Gtp`, `triglyceride`, `age` ou encore `ALT`. Les couleurs représentent la valeur de la variable : en rose pour les valeurs élevées, en bleu pour les faibles. Par exemple, un GTP ou un taux de triglycérides élevé pousse le modèle à prédire un statut de fumeur, tandis qu’un âge élevé contribue au contraire à diminuer cette probabilité.
+
+Ces visualisations, nous permettent de mieux comprendre pourquoi un individu est classé comme fumeur (ou non) par le modèle, et d’identifier les facteurs personnels qui influencent le plus les prédictions.
