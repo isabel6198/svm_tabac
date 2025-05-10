@@ -1,14 +1,84 @@
 
+## Nom du projet :
+
+**Prédiction du statut tabagique à partir de données biologiques issues d’examens de santé en Corée du Sud (2002–2015)**
+
+Réalisé dans le cadre  du master 2 Econométrie et Statistiques Appliquées, par :
+
+- LABRE-BLANC Emma
+
+- PALACIO Gloria Isabel
+
+
+##   Objectif:
+
+Appliquer plusieurs modèles de classification afin de prédire le statut tabagique (fumeur ou non) à partir de données médicales anonymisées issues d’examens de santé
+
+
+##  Reproductibilité du projet
+
+- Le projet a été développé avec **Python 3.9.6**.  
+- Les bibliothèques nécessaires sont listées dans le fichier **requirements.txt** pour faciliter l’installation de l’environnement.  
+- Le projet est structuré en **notebooks** pour suivre les différentes étapes :
+
+  - 01_exploration.ipynb : chargement des données, nettoyage et visualisation initiale  
+  - 02_models.ipynb : entraînement, comparaison et optimisation des modèles  
+  - 03_interpretation.ipynb : analyse de l’importance des variables et interprétation des prédictions (PDP, LIME, SHAP, etc.)
+
+---
+
+##  Fichier utils.py
+
+Ce fichier contient plusieurs **fonctions utilitaires** utilisées tout au long du projet, notamment pour la **préparation des données** et **l’explicabilité des modèles** :
+
+
+- winsorize_data(xtrain, xtest, feature)
+
+  Applique une **winsorisation** à une variable continue pour limiter l’impact des valeurs extrêmes
+
+- detect_variable_types(df)
+
+  Analyse automatiquement un DataFrame et retourne les variables **numériques**, **catégorielles**, **booléennes** ou **dates**.  
+
+- display_original_pdp_values(num_col, model, df, scaler, feature_names)
+
+  Permet de **représenter les PDP** avec les **valeurs non standardisées**, en inversant la transformation du StandardScaler 
 
 
 
-##  Objectif
 
-Appliquer plusieurs modèles de classification pour prédire une variable cible binaire à partir de données médicales anonymisées.
+## Organisation du dépôt
 
-### Caractéristiques disponibles
+```
+├── data/                       #  Jeux de données bruts et prétraités
+│   └── smoking.csv             #  dataset principal
+│   └── df_clean.csv            #  dataset avec les variables choisises pour modelisation
+│
+├── image/                      #  images
+│
+├── notebooks/                  
+│   ├── 01_exploration.ipynb    # Analyse descriptive et nettoyage
+│   ├── 02_models.ipynb         # modelisation et optimisation
+│   └── 03_interpretation.ipynb # Explicabilité 
+│
+├── utils.py
+│
+├── .gitignore                                    # fichiers à ignorer 
+├                           
+├── requirements.txt                              # Packages necessaires Python
+│                       
+├── README.md                                     # Présentation rapide du projet
+│                              
+└── Projet_SVM_PALACIO_LABRE-BLANC_M2ECAP.md      # Résultats et commentaires du projet 
 
-##  Variables explicatives
+```
+
+
+
+
+## Données & Variables:
+
+###  Variables explicatives
 
 - **Audition (oreille gauche / droite)** : 1 = normale, 2 = anormale
 - **Colonne "oral"** : acceptation de l'examen oral (toutes les valeurs sont `True`, colonne à supprimer)
@@ -46,37 +116,6 @@ Appliquer plusieurs modèles de classification pour prédire une variable cible 
 ### Variable cible
 
 - **Tabagisme (smoking)** : 1 = ne fume pas, 2 = fume
-
-
-
-## Organisation du dépôt
-
-```
-├── data/                       # Jeux de données bruts et prétraités
-│   └── smoking.csv             #  dataset principal
-│
-├── notebooks/                  # Jupyter pour exploration et modélisation
-│   ├── 01_exploration.ipynb    # Analyse descriptive et nettoyage
-│   ├── 02_models.ipynb         # modeles lineaires, non lineaires et autres.. mais aussi l'optimisation et tuning 
-│   └── 03_interpretation.ipynb # Explicabilité 
-│
-├                               
-│   ├── models.py               # Modules Python avec des fonctions réutilisables
-│
-├── requirements.txt            # Package Python
-├── README.md                   # Présentation rapide du projet
-└── 
-└── tabac.md                     # Résultats et commentaires du projet 
-```
-
-
-
-## Utilisation
-
-- **Exploration des données** :  Pour explorer les données et les comprendre `notebooks/01_exploration.ipynb`
-- **Modèles de base** : Nous permet de tester plusieurs modeles  `notebooks/02_models.ipynb`
-- **Optimisation** : configurer et optimiser dans `notebooks/03_optimisation.ipynb` 
-- **Explicabilité** : interpréter modèles et prédictions avec `notebooks/04_interpretation.ipynb`
 
 
 

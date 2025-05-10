@@ -4,47 +4,6 @@ import pandas as pd
 import scipy
 from sklearn.inspection import partial_dependence, PartialDependenceDisplay, permutation_importance
 
-## Functions utiles pour le projet uniquement pour 2 features
-
-def plot_svc_decision_boundary(svm_clf, xmin, xmax):
-    
-    '''
-    
-    SEULEMENT pour la fonction SVC de sklearn, pas de LINEARSVC
-    
-    Function qui permet de recupérer la constante et le coefficient directeur
-    d'un svm après entraintement.
-    
-    Un svm lineaire est de la forme w0*w0+w1*x1 +b =0
-    donc 
-    >= x1= -w0/w1 *x0 -b/w1
-    
-    avoir x1 en fonction de x0 permet de tracer la zone de décision du SVM 
-    et ainsi avoir une réprésentation graphique
-    
-    Pour calculer les marges on rajoute +- 1/w[1]
-    
-    
-    '''
-    
-    w = svm_clf.coef_[0]
-    b = svm_clf.intercept_[0]
-
-    # At the decision boundary, w0*x0 + w1*x1 + b = 0
-    # => x1 = -w0/w1 * x0 - b/w1
-    x0 = np.linspace(xmin, xmax, 200)
-    decision_boundary = -w[0]/w[1] * x0 - b/w[1]
-
-    margin = 1/w[1]
-    gutter_up = decision_boundary + margin
-    gutter_down = decision_boundary - margin
-
-    svs = svm_clf.support_vectors_
-    plt.scatter(svs[:, 0], svs[:, 1], s=180, facecolors='#FFAAAA')
-    plt.plot(x0, decision_boundary, "k-", linewidth=2)
-    plt.plot(x0, gutter_up, "k--", linewidth=2)
-    plt.plot(x0, gutter_down, "k--", linewidth=2)
-
 
 ## fonction de winzorisation
 
@@ -136,5 +95,6 @@ def display_original_pdp_values(num_col, model, df, scaler, feature_names):
     plt.grid(True)
     plt.tight_layout()
     plt.show()
+
 
 
