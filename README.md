@@ -119,5 +119,5 @@ Ce fichier contient plusieurs **fonctions utilitaires** utilisées tout au long 
 
 ---
 
-*Dernière mise à jour : avril 2025*
+*Dernière mise à jour : mai 2025*
 
