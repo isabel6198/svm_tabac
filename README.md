@@ -3,7 +3,7 @@
 
 **Prédiction du statut tabagique à partir de données biologiques issues d’examens de santé en Corée du Sud (2002–2015)**
 
-Réalisé dans le cadre  du master 2 Econométrie et Statistiques Appliquées, par :
+Réalisé dans le cadre du Master 2 Économétrie et Statistiques Appliquées de l'IAE de Nantes, par :
 
 - LABRE-BLANC Emma
 
@@ -25,9 +25,7 @@ Appliquer plusieurs modèles de classification afin de prédire le statut tabagi
   - 02_models.ipynb : entraînement, comparaison et optimisation des modèles  
   - 03_interpretation.ipynb : analyse de l’importance des variables et interprétation des prédictions (PDP, LIME, SHAP, etc.)
 
----
-
-##  Fichier utils.py
+- Fichier utils.py
 
 Ce fichier contient plusieurs **fonctions utilitaires** utilisées tout au long du projet, notamment pour la **préparation des données** et **l’explicabilité des modèles** :
 
@@ -50,18 +48,18 @@ Ce fichier contient plusieurs **fonctions utilitaires** utilisées tout au long 
 ## Organisation du dépôt
 
 ```
-├── data/                       #  Jeux de données bruts et prétraités
-│   └── smoking.csv             #  dataset principal
-│   └── df_clean.csv            #  dataset avec les variables choisises pour modelisation
+├── data/                                         #  Jeux de données bruts et prétraités
+│   └── smoking.csv                               #  dataset principal
+│   └── df_clean.csv                              #  dataset avec les variables choisies pour modelisation
 │
-├── image/                      #  images
+├── image/                                        #  images
 │
 ├── notebooks/                  
-│   ├── 01_exploration.ipynb    # Analyse descriptive et nettoyage
-│   ├── 02_models.ipynb         # modelisation et optimisation
-│   └── 03_interpretation.ipynb # Explicabilité 
+│   ├── 01_exploration.ipynb                      # Analyse descriptive et nettoyage
+│   ├── 02_models.ipynb                           # modelisation et optimisation
+│   └── 03_interpretation.ipynb                   # Explicabilité 
 │
-├── utils.py
+├── utils.py                                      # Fonctions 
 │
 ├── .gitignore                                    # fichiers à ignorer 
 ├                           
